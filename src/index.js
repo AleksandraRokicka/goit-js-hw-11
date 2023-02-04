@@ -10,6 +10,8 @@ const gallery = document.querySelector('.gallery');
 const searchButton = document.querySelector('button[type="submit"]');
 const loadingButton = document.querySelector('.load-more');
 
+loadingButton.style.visibility = 'hidden';
+
 const perPage = 40;
 let currentPage = 1;
 
@@ -19,11 +21,10 @@ const dataFromApi = {
   orientation: 'horizontal', // orientacja zdjęcia. Określ wartość horizontal.
   safesearch: 'true', // weryfikacja wieku. Określ wartość true.
   lang: 'en', // en jako wartosc default, nie trzeba pisac. jezyk wyszukiwania
-  per_page: 20, // Determine the number of results per page. Accepted values: 3 - 200 Default: 20
+  per_page: 40, // Determine the number of results per page. Accepted values: 3 - 200 Default: 20
 };
 const { key, image_type, orientation, safesearch, lang, per_page } =
   dataFromApi;
-
 
 const lightbox = new SimpleLightbox('.gallery a', {
   captionSelector: 'title',
@@ -34,7 +35,6 @@ const lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
 });
-
 
 async function fetchImages() {
   const input = document.querySelector("input[name='searchQuery']");
@@ -47,11 +47,11 @@ async function fetchImages() {
     const images = response.data.hits;
     console.log(images);
 
-   gallery.insertAdjacentHTML(
-     'beforeend',
-     images
-       .map(
-         el => `<div class="photo-card">
+    gallery.insertAdjacentHTML(
+      'beforeend',
+      images
+        .map(
+          el => `<div class="photo-card">
          <img src="${el.webformatURL} alt="${el.tags}" loading="lazy"/> 
          <div class="info">
          <p class="info-item">
@@ -62,9 +62,9 @@ async function fetchImages() {
          <b>Comments: ${el.comments}</b></p>
         <p class="info-item">
          <b>Downloads: ${el.downloads}</b></p></div></div>`
-       )
-       .join('')
-   );
+        )
+        .join('')
+    );
 
     if (images.length === 0) {
       Notiflix.Notify.failure(
@@ -72,19 +72,19 @@ async function fetchImages() {
       );
       return;
     }
-    if (images.length < images.perPage) {
+    if (images.length < dataFromApi.per_page) {
+      
       Notiflix.Notify.warning(
         "We're sorry, but you've reached the end of search results."
       );
     }
-
+loadingButton.style.visibility = 'visible';
     currentPage += 1;
   } catch (error) {
     console.error(error);
   }
 }
 
-searchButton.addEventListener('click', fetchImages);
 loadingButton.addEventListener('click', fetchImages);
 form.addEventListener('submit', function (event) {
   event.preventDefault();
