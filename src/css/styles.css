@@ -1,14 +1,9 @@
-* {
-  box-sizing: border-box;
-}
-
 body {
   padding: 0;
   margin: 0;
   font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   color: #212121;
   background-color: rgb(237, 237, 244);
-
 }
 
 .search-form {
@@ -36,11 +31,10 @@ margin: 20px;
   letter-spacing: 0.06em;
   border-style: none;
   padding: 10px 41px;
- 
 }
+
 .search-form{           
 text-align: center;
-
 }
 
 .gallery{
@@ -55,6 +49,7 @@ text-align: center;
     border-bottom-left-radius: 20px ;
     border-bottom-right-radius: 20px ;
 }
+
 .info-item{
     text-align: center;
 }
@@ -78,6 +73,6 @@ display: block;
   letter-spacing: 0.06em;
   border-style: none;
   padding: 10px 41px;
-
 }
+
 

@@ -1,6 +1,7 @@
 import Notiflix from 'notiflix';
 import axios from 'axios';
-import SimpleLightbox from 'simplelightbox';
+// import SimpleLightbox from 'simplelightbox';
+// import "simplelightbox/dist/simple-lightbox.min.css";
 import './css/styles.css';
 
 const url = 'https://pixabay.com/api/';
@@ -73,12 +74,13 @@ async function fetchImages() {
       return;
     }
     if (images.length < dataFromApi.per_page) {
-      
+
       Notiflix.Notify.warning(
         "We're sorry, but you've reached the end of search results."
       );
+      // loadingButton.style.visibility = 'hidden';
+    
     }
-loadingButton.style.visibility = 'visible';
     currentPage += 1;
   } catch (error) {
     console.error(error);
@@ -87,12 +89,10 @@ loadingButton.style.visibility = 'visible';
 
 loadingButton.addEventListener('click', fetchImages);
 form.addEventListener('submit', function (event) {
+  
   event.preventDefault();
   currentPage = 1;
   gallery.innerHTML = '';
   fetchImages();
+  
 });
-
-// function clearImageGallery() {
-//   gallery.innerHTML = '';
-// }
