@@ -1,8 +1,18 @@
 import Notiflix from 'notiflix';
 import axios from 'axios';
 import SimpleLightbox from 'simplelightbox';
-import "simplelightbox/dist/simple-lightbox.min.css";
+import 'simplelightbox/dist/simple-lightbox.min.css';
 import './css/styles.css';
+
+const lightbox = new SimpleLightbox('.gallery a', {
+      captionSelector: 'title',
+      close: true,
+      nav: true,
+      escKey: true,
+      captionSelector: 'img',
+      captionsData: 'alt',
+      captionDelay: 250,
+    });
 
 const url = 'https://pixabay.com/api/';
 
@@ -10,9 +20,7 @@ const form = document.querySelector('.search-form');
 const gallery = document.querySelector('.gallery');
 const searchButton = document.querySelector('button[type="submit"]');
 const loadingButton = document.querySelector('.load-more');
-
-loadingButton.style.visibility = 'hidden';
-
+const input = document.querySelector("input[name='searchQuery']");
 const perPage = 40;
 let currentPage = 1;
 
@@ -29,15 +37,27 @@ const { key, image_type, orientation, safesearch, lang, per_page } =
 
 
 async function fetchImages() {
-  const input = document.querySelector("input[name='searchQuery']");
-  const searchTerm = input.value;
+  loadingButton.style.visibility = 'hidden';
+  const searchTerm = input.value.trim();
   const urlApi = `https://pixabay.com/api/?key=${key}&q=${searchTerm}&image_type=${image_type}&orientation=${orientation}&safe_search=${safesearch}&lang=${lang}&per_page=${per_page}&page=${currentPage}`;
   try {
-    let value = '';
     const response = await axios.get(urlApi);
     console.log(response);
     const images = response.data.hits;
     console.log(images);
+
+    if (images.length === 0) {
+      Notiflix.Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+      return;
+    }
+    if (images.length < dataFromApi.per_page) {
+      Notiflix.Notify.warning(
+        "We're sorry, but you've reached the end of search results."
+      );
+      // loadingButton.style.visibility = 'hidden';
+    }
 
     gallery.insertAdjacentHTML(
       'beforeend',
@@ -57,32 +77,10 @@ async function fetchImages() {
         )
         .join('')
     );
-     const lightbox = new SimpleLightbox('.gallery a', {
-       captionSelector: 'title',
-       close: true,
-       nav: true,
-       escKey: true,
-       captionSelector: 'img',
-       captionsData: 'alt',
-       captionDelay: 250,
-     });
 
-    if (images.length === 0) {
-      Notiflix.Notify.failure(
-        'Sorry, there are no images matching your search query. Please try again.'
-      );
-      return;
-    }
-    if (images.length < dataFromApi.per_page) {
-
-      Notiflix.Notify.warning(
-        "We're sorry, but you've reached the end of search results."
-      );
-      // loadingButton.style.visibility = 'hidden';
-    
-    }
+    lightbox.refresh();
+     loadingButton.style.visibility = 'visibility';
     currentPage += 1;
-
   } catch (error) {
     console.error(error);
   }
@@ -90,10 +88,8 @@ async function fetchImages() {
 
 loadingButton.addEventListener('click', fetchImages);
 form.addEventListener('submit', function (event) {
-  
   event.preventDefault();
   currentPage = 1;
   gallery.innerHTML = '';
   fetchImages();
-  
 });
