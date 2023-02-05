@@ -1,7 +1,7 @@
 import Notiflix from 'notiflix';
 import axios from 'axios';
-// import SimpleLightbox from 'simplelightbox';
-// import "simplelightbox/dist/simple-lightbox.min.css";
+import SimpleLightbox from 'simplelightbox';
+import "simplelightbox/dist/simple-lightbox.min.css";
 import './css/styles.css';
 
 const url = 'https://pixabay.com/api/';
@@ -27,15 +27,6 @@ const dataFromApi = {
 const { key, image_type, orientation, safesearch, lang, per_page } =
   dataFromApi;
 
-const lightbox = new SimpleLightbox('.gallery a', {
-  captionSelector: 'title',
-  close: true,
-  nav: true,
-  escKey: true,
-  captionSelector: 'img',
-  captionsData: 'alt',
-  captionDelay: 250,
-});
 
 async function fetchImages() {
   const input = document.querySelector("input[name='searchQuery']");
@@ -66,6 +57,15 @@ async function fetchImages() {
         )
         .join('')
     );
+     const lightbox = new SimpleLightbox('.gallery a', {
+       captionSelector: 'title',
+       close: true,
+       nav: true,
+       escKey: true,
+       captionSelector: 'img',
+       captionsData: 'alt',
+       captionDelay: 250,
+     });
 
     if (images.length === 0) {
       Notiflix.Notify.failure(
@@ -82,6 +82,7 @@ async function fetchImages() {
     
     }
     currentPage += 1;
+
   } catch (error) {
     console.error(error);
   }
